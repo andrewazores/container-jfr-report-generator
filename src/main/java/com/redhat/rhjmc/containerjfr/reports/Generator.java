@@ -34,9 +34,7 @@ public class Generator {
 
         JMCConnectionToolkit ctk = new JMCConnectionToolkit(cw, new Clock());
 
-        JMCConnection connection = null;
-        try {
-            connection = ctk.connect(hostname, port);
+        try (JMCConnection connection = ctk.connect(hostname, port)){
             IFlightRecorderService service = connection.getService();
             IRecordingDescriptor recording = getDescriptorByName(service, recordingName);
             if (recording == null) {
@@ -50,10 +48,6 @@ public class Generator {
         } catch (Exception e) {
             cw.println(e);
             System.err.println("Unexpected exception, quitting...");
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
         }
     }
 
