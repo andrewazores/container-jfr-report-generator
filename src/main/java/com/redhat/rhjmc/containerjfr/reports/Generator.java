@@ -15,17 +15,20 @@ import org.openjdk.jmc.rjmx.services.jfr.IRecordingDescriptor;
 public class Generator {
     public static void main(String[] args) {
         //TODO validations
-        if (args.length != 2) {
-            System.out.println("Expected two arguments: host connection string and recording name");
+        if (args.length != 3) {
+            System.err.println("Expected three arguments: hostname, port, and recording name");
         }
-        String hostString = args[0];
-        String recordingName = args[1];
+        ClientWriter cw = new ClientWriterImpl();
+        String hostname = args[0];
+        int port = Integer.parseInt(args[1]);
+        String recordingName = args[2];
+        cw.println(String.format("Analyzing %s from %s:%d...", recordingName, hostname, port));
 
-        JMCConnectionToolkit ctk = new JMCConnectionToolkit(new ClientWriterImpl(), new Clock());
+        JMCConnectionToolkit ctk = new JMCConnectionToolkit(cw, new Clock());
 
         JMCConnection connection = null;
         try {
-            connection = ctk.connect(hostString);
+            connection = ctk.connect(hostname, port);
             IFlightRecorderService service = connection.getService();
             IRecordingDescriptor recording = getDescriptorByName(service, recordingName);
             try (InputStream stream = service.openStream(recording, false)) {
@@ -33,7 +36,8 @@ public class Generator {
                 System.out.println(report);
             }
         } catch (Exception e) {
-            System.out.println("Unexpected exception, quitting...");
+            cw.println(e);
+            System.err.println("Unexpected exception, quitting...");
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -53,7 +57,7 @@ public class Generator {
     private static class ClientWriterImpl implements ClientWriter {
         @Override
         public void print(String s) {
-            System.out.print("\t[LOG] " + s);
+            System.err.print("\t[LOG] " + s);
         }
     }
 }
