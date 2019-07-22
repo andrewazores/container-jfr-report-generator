@@ -39,6 +39,10 @@ public class Generator {
             connection = ctk.connect(hostname, port);
             IFlightRecorderService service = connection.getService();
             IRecordingDescriptor recording = getDescriptorByName(service, recordingName);
+            if (recording == null) {
+                System.err.println("Recording not found");
+                System.exit(1);
+            }
             try (InputStream stream = service.openStream(recording, false)) {
                 String report = JfrHtmlRulesReport.createReport(stream);
                 System.out.println(report);
