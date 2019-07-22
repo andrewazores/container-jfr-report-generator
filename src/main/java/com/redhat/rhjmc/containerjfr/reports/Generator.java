@@ -3,13 +3,12 @@ package com.redhat.rhjmc.containerjfr.reports;
 import java.io.InputStream;
 import java.util.Objects;
 
-import com.redhat.rhjmc.containerjfr.core.jmc.RegistryProvider;
+import com.redhat.rhjmc.containerjfr.core.ContainerJfrCore;
 import com.redhat.rhjmc.containerjfr.core.net.JMCConnection;
 import com.redhat.rhjmc.containerjfr.core.net.JMCConnectionToolkit;
 import com.redhat.rhjmc.containerjfr.core.sys.Clock;
 import com.redhat.rhjmc.containerjfr.core.tui.ClientWriter;
 
-import org.eclipse.core.runtime.RegistryFactory;
 import org.openjdk.jmc.flightrecorder.rules.report.html.JfrHtmlRulesReport;
 import org.openjdk.jmc.rjmx.services.jfr.IFlightRecorderService;
 import org.openjdk.jmc.rjmx.services.jfr.IRecordingDescriptor;
@@ -22,7 +21,7 @@ public class Generator {
         }
         ClientWriter cw = new ClientWriterImpl();
         try {
-            RegistryFactory.setDefaultRegistryProvider(new RegistryProvider());
+            ContainerJfrCore.initialize();
         } catch (Exception e) {
             cw.println(e);
             System.exit(1);
