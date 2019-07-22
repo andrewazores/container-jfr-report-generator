@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.redhat.rhjmc:containerjfr-core:0.1.3.1'
+    implementation 'com.redhat.rhjmc:containerjfr-core:0.1.4'
 }
 
 mainClassName = 'com.redhat.rhjmc.containerjfr.reports.Generator'
