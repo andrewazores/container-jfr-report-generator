@@ -21,6 +21,7 @@ public class Generator {
             System.exit(1);
         }
         ClientWriter cw = new ClientWriterImpl();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> cw.println("Terminating")));
         try {
             ContainerJfrCore.initialize();
         } catch (Exception e) {
