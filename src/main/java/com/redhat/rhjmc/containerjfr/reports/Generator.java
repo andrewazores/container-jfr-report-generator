@@ -70,7 +70,7 @@ public class Generator {
     private static class ClientWriterImpl implements ClientWriter {
         @Override
         public void print(String s) {
-            System.err.print("\t[LOG] " + s);
+            System.err.print("[LOG] " + s);
         }
     }
 }
