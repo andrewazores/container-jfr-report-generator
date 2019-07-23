@@ -38,13 +38,16 @@ public class Generator {
 
         JMCConnectionToolkit ctk = new JMCConnectionToolkit(cw, new Clock());
 
+        cw.println(String.format("Attempting connection to %s:%d", hostname, port));
         try (JMCConnection connection = ctk.connect(hostname, port)){
+            cw.println("Connection established");
             IFlightRecorderService service = connection.getService();
             IRecordingDescriptor recording = getDescriptorByName(service, recordingName);
             if (recording == null) {
                 cw.println("Recording not found");
                 System.exit(2);
             }
+            cw.println("Recording found");
             try (InputStream stream = service.openStream(recording, false)) {
                 cw.print("Processing ");
                 ScheduledFuture<?> progress = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> System.err.print(". "), 0, 1, TimeUnit.SECONDS);
