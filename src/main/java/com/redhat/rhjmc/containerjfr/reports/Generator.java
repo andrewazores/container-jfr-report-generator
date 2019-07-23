@@ -50,6 +50,7 @@ public class Generator {
                 ScheduledFuture<?> progress = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> System.err.print(". "), 0, 1, TimeUnit.SECONDS);
                 System.out.println(JfrHtmlRulesReport.createReport(stream));
                 progress.cancel(false);
+                System.exit(0);
             }
         } catch (Exception e) {
             cw.println(e);
