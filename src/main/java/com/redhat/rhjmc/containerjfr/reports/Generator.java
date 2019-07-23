@@ -2,6 +2,9 @@ package com.redhat.rhjmc.containerjfr.reports;
 
 import java.io.InputStream;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.redhat.rhjmc.containerjfr.core.ContainerJfrCore;
 import com.redhat.rhjmc.containerjfr.core.net.JMCConnection;
@@ -43,8 +46,10 @@ public class Generator {
                 System.exit(2);
             }
             try (InputStream stream = service.openStream(recording, false)) {
-                String report = JfrHtmlRulesReport.createReport(stream);
-                System.out.println(report);
+                System.err.print("Processing ");
+                ScheduledFuture<?> progress = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> System.err.print(". "), 0, 1, TimeUnit.SECONDS);
+                System.out.println(JfrHtmlRulesReport.createReport(stream));
+                progress.cancel(false);
             }
         } catch (Exception e) {
             cw.println(e);
