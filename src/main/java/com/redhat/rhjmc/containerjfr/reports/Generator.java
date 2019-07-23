@@ -18,6 +18,7 @@ public class Generator {
         //TODO validations
         if (args.length != 3) {
             System.err.println("Expected three arguments: hostname, port, and recording name");
+            System.exit(1);
         }
         ClientWriter cw = new ClientWriterImpl();
         try {
@@ -38,7 +39,7 @@ public class Generator {
             IRecordingDescriptor recording = getDescriptorByName(service, recordingName);
             if (recording == null) {
                 System.err.println("Recording not found");
-                System.exit(1);
+                System.exit(2);
             }
             try (InputStream stream = service.openStream(recording, false)) {
                 String report = JfrHtmlRulesReport.createReport(stream);
@@ -47,6 +48,7 @@ public class Generator {
         } catch (Exception e) {
             cw.println(e);
             System.err.println("Unexpected exception, quitting...");
+            System.exit(3);
         }
     }
 
