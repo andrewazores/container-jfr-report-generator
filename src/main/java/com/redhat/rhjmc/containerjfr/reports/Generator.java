@@ -19,11 +19,11 @@ import org.openjdk.jmc.rjmx.services.jfr.IRecordingDescriptor;
 public class Generator {
     public static void main(String[] args) {
         //TODO validations
+        ClientWriter cw = new ClientWriterImpl();
         if (args.length != 3) {
-            System.err.println("Expected three arguments: hostname, port, and recording name");
+            cw.println("Expected three arguments: hostname, port, and recording name");
             System.exit(1);
         }
-        ClientWriter cw = new ClientWriterImpl();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> cw.println("Terminating")));
         try {
             ContainerJfrCore.initialize();
@@ -42,11 +42,11 @@ public class Generator {
             IFlightRecorderService service = connection.getService();
             IRecordingDescriptor recording = getDescriptorByName(service, recordingName);
             if (recording == null) {
-                System.err.println("Recording not found");
+                cw.println("Recording not found");
                 System.exit(2);
             }
             try (InputStream stream = service.openStream(recording, false)) {
-                System.err.print("Processing ");
+                cw.print("Processing ");
                 ScheduledFuture<?> progress = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> System.err.print(". "), 0, 1, TimeUnit.SECONDS);
                 System.out.println(JfrHtmlRulesReport.createReport(stream));
                 progress.cancel(false);
@@ -54,7 +54,7 @@ public class Generator {
             }
         } catch (Exception e) {
             cw.println(e);
-            System.err.println("Unexpected exception, quitting...");
+            cw.println("Unexpected exception, quitting...");
             System.exit(3);
         }
     }
