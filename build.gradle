@@ -20,7 +20,7 @@ jib {
         image = 'gcr.io/distroless/java:11'
     }
     to {
-        image = 'quay.io/rh-jmc-team/container-jfr-reports-generator'
+        image = 'quay.io/andrewazores/container-jfr-reports-generator'
     }
     container {
         useCurrentTimestamp = true
